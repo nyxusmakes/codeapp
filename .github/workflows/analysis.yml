@@ -1,0 +1,32 @@
+name: Inspect Code App Project
+
+on:
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download frameworks
+        run: |
+          chmod +x ./downloadFrameworks.sh
+          ./downloadFrameworks.sh
+
+      - name: Inspect project
+        run: |
+          echo "=== PROJECT ==="
+          xcodebuild -list -project Code.xcodeproj
+
+          echo ""
+          echo "=== WORKSPACES ==="
+          find . -name "*.xcworkspace" -print
+
+          echo ""
+          echo "=== PROJECT FILES ==="
+          find . -maxdepth 2 -name "*.xcodeproj" -print
