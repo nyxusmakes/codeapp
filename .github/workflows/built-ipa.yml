@@ -21,16 +21,15 @@ jobs:
           chmod +x ./downloadFrameworks.sh
           ./downloadFrameworks.sh
 
-      - name: Show Xcode information
+      - name: Show project schemes
         run: |
-          xcodebuild -version
           xcodebuild -list -project Code.xcodeproj
 
       - name: Build unsigned
         run: |
           xcodebuild \
             -project Code.xcodeproj \
-            -scheme Code \
+            -scheme "Code App" \
             -configuration Release \
             -sdk iphoneos \
             -derivedDataPath build \
