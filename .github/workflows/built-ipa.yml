@@ -1,0 +1,45 @@
+name: Code App 1.10.0 - Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build Code App 1.10.0
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Code App 1.10.0
+        uses: actions/checkout@v4
+        with:
+          ref: 1.12.2
+
+      - name: Download frameworks
+        run: |
+          chmod +x ./downloadFrameworks.sh
+          ./downloadFrameworks.sh
+
+      - name: Show Xcode information
+        run: |
+          xcodebuild -version
+          xcodebuild -list -project Code.xcodeproj
+
+      - name: Build unsigned
+        run: |
+          xcodebuild \
+            -project Code.xcodeproj \
+            -scheme Code \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            clean build
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Code-App-1.10.0-build
+          path: build/Build/Products/Release-iphoneos/
